@@ -11,7 +11,7 @@
 - adb devices 可查看已连接的所有设备
 
 ##很好的demo
-- [AndroidTVLauncher-1](https://github.com/gcoldcoffee/AndroidTVLauncher-1)
+- [本人做过的应用，请安装到安卓智能盒子或者电视](https://github.com/gcoldcoffee/Android-TVBox-development/blob/master/KanKeHD%2B.apk)
 - [据说东半球最好的TV桌面开源项目](http://blog.csdn.net/rain_butterfly/article/details/44942747)
 
 ##adb 常用相关命令
@@ -45,4 +45,7 @@
 
 ##adb 相关资料
 -[资料](https://github.com/gcoldcoffee/Android-TVBox-development/blob/master/%E8%B5%84%E6%96%99URL.txt)
+
+
+# 我的QQ，有疑问可加我
 
