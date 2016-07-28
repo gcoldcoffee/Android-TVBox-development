@@ -48,4 +48,4 @@
 
 
 # 我的QQ，有疑问可加我
-[https://github.com/gcoldcoffee/Android-TVBox-development/blob/master/qq.png]
+![image](https://github.com/gcoldcoffee/Android-TVBox-development/blob/master/qq.png)
