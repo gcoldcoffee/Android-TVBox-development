@@ -1,0 +1,202 @@
+========adb 常用命令
+
+启动另外一个apk
+Intent mIntent = new Intent( );   
+ComponentName comp = new ComponentName(packageName, activityName);  
+mIntent.setComponent(comp);   
+mIntent.setAction("android.intent.action.VIEW");   
+startActivity(mIntent);
+
+
+一、adb启动activity：
+$ adb shell
+$ am start -n ｛包(package)名｝/｛包名｝.{活动(activity)名称}
+如：启动浏览器
+# am start -n com.android.browser/com.android.browser.BrowserActivity
+
+二、adb启动service：
+$ adb shell
+$ am startservice -n ｛包(package)名｝/｛包名｝.{服务(service)名称}
+
+$ am startservice --user 0 -n ｛包(package)名｝/｛包名｝.{服务(service)名称}
+
+获取设备已安装列表
+adb -s 192.168.9.5:5555 shell pm list packages
+
+
+如：启动自己应用中一个service
+# am startservice -n com.android.traffic/com.android.traffic.maniservice
+
+三、adb发送broadcast：
+$ adb shell
+$ am broadcast -a <广播动作>
+如：发送一个网络变化的广播
+# am broadcast -a android.net.conn.CONNECTIVITY_CHANGE
+
+
+
+adb monkey自动化测试
+adb shell monkey -p com.kanke.control.phone –v 500
+
+
+
+
+===获取盒子设备名称
+-cmd
+adb connect 192.168.1.142
+cat /system/build.prop | grep product.model
+
+-代码
+"adb connect " + paramString1
+"adb -s %s:5555 shell \"cat /system/build.prop | grep product.model\"", arrayOfObject1
+"adb -s %s:5555 disconnect", arrayOfObject2
+
+
+
+
+
+1、截图指令
+
+screencap /mnt/sdcard/1234.png
+
+2、分辨率获取
+
+adb shell dumpsys window displays 或 adb shell dumpsys window | find “init”
+
+结果如：init=1080×1920 480dpi cur=1080×1920 app=1080×1920 rng=1080×1005-1920×1845（需要进行超找）
+3、获取当前应用的package和activity名(需要python 2.7)
+
+a、适用于4.2以下版本
+i=os.popen(‘adb shell dumpsys activity’).read().split(‘Running activit’)[1].split(‘}’)[1].split(‘ ‘)[-1]
+b、适用于4.1以上版本
+i=os.popen(“adb shell dumpsys input | findstr FocusedApplication”).read().split()[5]
+
+4、监控某应用的内存耗用
+
+adb shell dumpsys meminfo packagename
+
+5、监控cpu使用情况
+
+adb shell dumpsys cpuinfo
+
+6、获取所有包名
+
+adb shell pm list packages
+
+7、获取系统应用包名
+
+adb shell pm list packages -s
+
+8、获取第三方应用包名
+
+adb shell pm list packages -3
+
+9、获取包名对应的应用程序安装包路径
+
+adb shell pm list packages -f packagename 全部应用
+adb shell pm list packages -3 -f packagename 第三方应用
+adb shell pm list packages -s -f packagename 系统应用
+
+10、清除应用数据
+
+adb shell pm clear packagename
+
+11、关闭应用
+
+am force-stop packagename
+
+12、发送广播
+
+am broadcast [options]
+如：adb shell am broadcast -a “action_finish” （发送一个广播去关闭一个activity）
+adb shell am broadcast -a android.intent.action.MASTER_CLEAR（恢复出厂设置的方法，会清除内存所有内容）
+
+13、查看文件夹空间大小
+
+du -c -k 查看路径下所有文件的大小并计算总和，单位KB
+
+14、等待adb设备接入（无设备时就堵塞进程，有设备就返回空值）
+
+adb wait-for-device
+
+15、筛选输出
+linux：| grep xxx
+dos: | findstr xxx 或 | findstr “xxxx”
+
+16、log记录
+
+logcat -d 打印前一段时间的log，自动退出logcat
+
+logcat *:e 仅打印e级别以上的log（e可替换）
+
+logcat -s XXX 仅过滤出XXX相关的log
+
+logcat -f 重定向log输出（如到文件），与”>>”类似，但比”>>”兼容性好
+
+17、自带控制方法
+
+input keyevent 执行按键命令，如“adb shell input keyevent KEYCODE_POWER”或“adb shell input keyevent 26”
+input tap 执行点击命令，如“adb shell input tap 800 800”
+input swipe 执行滑动指令
+input text “文本内容” 输入文本，需要先有焦点，不能有空格
+am start 包（package）包名/活动名 启动应用
+adb shell am start –activity-single-top -n 包名/活动名 切换已启动应用的活动名页
+adb shell am start -W -n 包名/活动名 启动应用并计算启动时间
+
+18、获取android中的文件
+
+adb pull
+
+19、向android中写文件
+
+adb push
+
+20、安装app
+
+adb install path/xxx.apk
+-r 强制安装
+-s 安装到sdcard（部分手机不可用）
+
+21、卸载app
+
+adb uninstall packagename
+
+22、删除文件
+
+rm path/xxx
+
+23、删除文件夹
+
+rm -r path
+
+24、创建文件
+
+> path/xxx
+touch path/xxx
+
+25、创建文件夹
+
+mkdir path
+
+ 
+
+补充：（针对已root设备）
+
+adb root（获取root权限，需在设置中将root权限更改为应用和adb）
+
+adb remount（重新挂载/system分区，可push文件）
+
+安装过程如下
+>删除老应用
+1.使用adb连接盒子（adb connect  ip）
+2.权限提升（adb remount）
+3.进入shell模式（adb shell）
+4.进入系统应用目录（cd /syetem/app）
+5.删除老应用文件（rm -r  Test.apk）
+ 
+>安装新应用
+1.使用盒子对应签名文件进行签名，得到签名后文件（假设文件目录为D:/Test.apk，）
+2.进入cmd模式（shell模式下使用Ctrl + C退出即可）
+3.安装新应用（adb push D:/Test.apk  /system/app）
+4.重启盒子
+ 
